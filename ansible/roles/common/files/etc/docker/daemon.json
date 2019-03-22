@@ -1,0 +1,5 @@
+{
+  "debug": false,
+  "log-driver": "json-file",
+  "log-opts": []
+}
