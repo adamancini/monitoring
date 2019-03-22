@@ -492,10 +492,12 @@
       reload: no
     when: "'memory-96GB' in group_names"
 
-...
 
 # reserve 512M minimum memory for the system, try to protect from some OOM situations
- - name: set sysctl vm.min_free_kbytes
-   sysctl:
-    name: vm.min_free_kbytes
-    value: 512000
+  - name: set sysctl vm.min_free_kbytes
+    sysctl:
+      name: vm.min_free_kbytes
+      value: 512000
+      state: present
+      sysctl_set: yes
+      reload: no

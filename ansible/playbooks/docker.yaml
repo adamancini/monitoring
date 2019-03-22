@@ -8,3 +8,44 @@
   tasks:
 
     - import_tasks: includes/tasks/sysctl.yaml
+    - import_tasks: includes/tasks/tuned.yaml
+    - import_tasks: includes/tasks/firewalld.yaml
+
+- hosts: linux-workers
+  gather_facts: true
+  serial: 1
+  remote_user: root
+  roles:
+  - ../roles/common
+
+  tasks:
+
+  # configure docker systemd unit - enable experimental features for prometheus monitoring on workers only
+  #
+  - name: mkdir /etc/systemd/system/docker.service.d
+    file:
+      path: /etc/systemd/system/docker.service.d
+      state: directory
+    notify: systemctl-docker
+
+  - name: configure docker.service.d
+    copy: src=../roles/common/files/etc/systemd/system/docker.service.d/docker.conf dest=/etc/systemd/system/docker.service.d/docker.conf owner=root group=root mode="u=rw,g=r,o=r"
+    notify: systemctl-docker
+
+  - name: configure Docker systemd proxy.conf
+    copy: src=../roles/{{CLUSTER}}/files/etc/systemd/system/docker.service.d/proxy.conf dest=/etc/systemd/system/docker.service.d/proxy.conf owner=root group=root mode="u=rw,g=r,o=r"
+    notify: systemctl-docker
+    when: PROXY_ENABLED=='true'"
+
+  - name: process systemd changes immediately
+    meta: flush_handlers
+
+  handlers:
+
+  - name: systemctl-docker
+    systemd:
+      state: stopped
+      daemon_reload: yes
+      enabled: no
+      masked: no
+      name: docker
