@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+    node-exporter:
+        image: "prom/node-exporter:v0.16.0"
+        command: ["--path.procfs=/host/proc", "--path.sysfs=/host/sys", "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$$$|/)"]
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /:/host/rootfs:ro
+        ports:
+            - target: 9100
+              published: 9100
+              protocol: tcp
+              mode: host
+        deploy:
+            mode: global
+
+    cadvisor:
+        image: "google/cadvisor:v0.30.2"
+        volumes:
+            - /:/rootfs:ro
+            - /sys:/sys:ro
+            - /var/run:/var/run:ro
+            - /var/lib/docker:/var/lib/docker:ro
+        ports:
+            - target: 8080
+              published: 8080
+              protocol: tcp
+              mode: host
+        deploy:
+            mode: global
+
+    prometheus:
+        image: "prom/prometheus:v2.3.1"
+        configs:
+            - source: prometheus_config
+              target: /etc/prometheus/prometheus.yml
+        ports:
+          - 9090:9090
+        deploy:
+            labels:
+                com.docker.lb.hosts: prometheus.dockr.life
+                com.docker.lb.port: 9090
+
+    grafana:
+        image: "grafana/grafana:5.2.2"
+        ports:
+          - 3000:3000
+        deploy:
+            labels:
+                com.docker.lb.hosts: grafana.dockr.life
+                com.docker.lb.port: 3000
+        environment:
+            - "GF_SECURITY_ADMIN_USER=admin"
+            - "GF_SECURITY_ADMIN_PASSWORD=Pa22word"
+            - "GF_USERS_ALLOW_SIGN_UP=false"
+
+configs:
+    prometheus_config:
+        external:
+            name: service.prometheus.conf
