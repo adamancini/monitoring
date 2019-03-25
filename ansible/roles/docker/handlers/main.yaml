@@ -1,0 +1,8 @@
+---
+- name: systemctl-docker
+  systemd:
+    state: stopped
+    daemon_reload: yes
+    enabled: no
+    masked: no
+    name: docker

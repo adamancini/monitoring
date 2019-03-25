@@ -1,0 +1,9 @@
+---
+- name: set up sysctl tunables
+  import_tasks: sysctl.yaml
+
+- name: set up tuned.conf
+  import_tasks: tuned.yaml
+
+- name: disable firewalld
+  import_tasks: firewalld.yaml

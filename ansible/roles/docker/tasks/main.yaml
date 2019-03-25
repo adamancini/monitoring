@@ -1,0 +1,16 @@
+---
+# configure docker systemd unit - enable experimental features for prometheus monitoring on workers only
+#
+- name: mkdir /etc/systemd/system/docker.service.d
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+  notify: systemctl-docker
+
+- name: configure docker.service.d
+  copy: src=etc/systemd/system/docker.service.d/docker.conf dest=/etc/systemd/system/docker.service.d/docker.conf owner=root group=root mode=0644
+  notify: systemctl-docker
+
+- name: process systemd changes immediately
+  meta: flush_handlers
+

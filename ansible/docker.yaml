@@ -1,0 +1,5 @@
+- name: set up the Docker daemon on linux-workers with metrics endpoint exposed
+  hosts: linux-workers
+  remote_user: root
+  roles:
+    - docker
