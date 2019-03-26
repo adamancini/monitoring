@@ -1,5 +1,9 @@
 {
   "debug": false,
+  "experimental": false,
   "log-driver": "json-file",
-  "log-opts": []
+  "log-opts": {
+      "max-size": "50m",
+      "max-file":"5"
+    },
 }
