@@ -1,0 +1,12 @@
+---
+- name: check if firewalld is installed, and if so, disable it
+  shell: 'if systemctl cat firewalld.service; then echo true; else echo false; fi'
+  register: firewalld_installed
+
+- name: disable firewalld permanently
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+    masked: yes
+  when: firewalld_installed
