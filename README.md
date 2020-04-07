@@ -172,3 +172,9 @@ kernel sysctl tunables
 
 swarmstack/swarmstack
 > https://github.com/swarmstack/swarmstack
+
+finding consul services w/ prom
+> https://www.robustperception.io/finding-consul-services-to-monitor-with-prometheus
+
+updated netdata & prom & grafana stack
+> https://docs.netdata.cloud/backends/walkthrough/
