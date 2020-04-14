@@ -11,7 +11,7 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: grafana.k8s.aws.antiskub.net
+    - host: grafana.apps.test.mira.annarchy.net
       http:
         paths:
           - path: /
